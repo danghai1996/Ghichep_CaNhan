@@ -32,3 +32,25 @@ Truy cập https://drive.google.com/
 <img src="..\images\Screenshot_7.png">
 
 <img src="..\images\Screenshot_8.png">
+
+4. Tạo file lưu tài liệu
+- Vào thư mục vừa tạo, tạo file
+
+<img src="..\images\Screenshot_9.png">
+
+- Đồng ý quyền truy cập như thư mục
+
+<img src="..\images\Screenshot_10.png">
+
+- Đặt tên file
+
+<img src="..\images\Screenshot_11.png">
+
+5. Nhận xét và giải quyết
+- Khi có nhận xét sẽ có hiển thị như hình
+
+<img src="..\images\Screenshot_12.png">
+
+- Khi hoàn hiện chỉnh sửa theo comment, ta nhấn giải quyết hoặc trả lời comment đó.
+
+<img src="..\images\Screenshot_13.png">
