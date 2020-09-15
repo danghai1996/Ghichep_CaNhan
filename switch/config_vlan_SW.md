@@ -71,3 +71,7 @@ Switch#show vlan
 ```
 
 <img src="..\images\Screenshot_24.png">
+
+Kiểm tra ping từ các PC trong cùng VLAN -> OK
+
+Ping giữa các VLAN khác nhau -> Không ping được.
