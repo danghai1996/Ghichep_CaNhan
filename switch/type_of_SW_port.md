@@ -30,7 +30,9 @@ Switch(config-if)#switchport mode access
 
 ### Cấu hình :
 ```
-Switch#configure terminal 
+Switch#configure terminal
+Switch(config)#interface fastEthernet 0/10
+Switch(config-if)#switchport mode trunk
 ```
 
 ## 3. Kiểm tra port đang ở mode nào:
