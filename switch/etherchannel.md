@@ -35,6 +35,8 @@ Là giao thức cấu hình EtherChannel chuẩn quốc tế IEEE 802.3ad và c�
 
 LACP gửi các gói trên các cổng EtherChannel của switch. LACP gán vai trò cổng đến các đầu cuối của EtherChannel. Các switch có độ ưu tiên thấp nhất sẽ được phép ra quyết định về các cổng nào sẽ được tham gia vào EtherChannel ở một thời điểm. Các cổng được chọn lựa và trở thành active theo giá trị độ ưu tiên priority của nó, trong đó giá trị ưu tiên cao
 
+Thông qua LACP, một switch sẽ chọn lựa ra 8 cổng có độ ưu tiên thấp nhất như là các member active của EtherChannel. Các cổng còn lại sẽ nằm trong trạng thái standby và sẽ được enable nếu một trong những kết nối active bị down. Cũng giống như PagP, LACP có thể được cấu hình trong active mode, trong đó một switch sẽ chủ động hỏi switch đằng xa bắt tay hình thành EtherChannel. Chế độ passtive thì switch chỉ chủ động hình thành EtherChannel chỉ nếu switch đầu xa khởi tạo nó.
+
 LACP có 3 chế độ:
 - `On`: Chế độ cấu hình EtherChannel tĩnh, chế độ này thường không được dùng vì các Switch cấu hình EtherChannel có thể hoạt động được và cũng có thể không hoạt động được vì các Switch được cầu hình bằng tay phục thuộc vào con người nên hoàn toàn không có bước thương lượng trao đổi chính sách giữa các bên dẫn đến khả năng Loop cao và bị STP (Spanning Tree Protocol) Block.
 - `Active`: Chế độ tự động – Tự động thương lượng với đối tác
