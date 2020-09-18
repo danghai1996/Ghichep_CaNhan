@@ -38,6 +38,8 @@ LACP có 3 chế độ:
 - `Active`: Chế độ tự động – Tự động thương lượng với đối tác
 - `Passive`: Chế độ bị động – Chờ được thương lượng
 
+<img src="..\images\Screenshot_32.png">
+
 ### PAgP (Port Aggregation Protocol)
 Port Aggregation Protocol là một giao thức độc quyền của Cisco được sử dụng để hình thành EtherChannel. Chỉ hỗ trợ ghép tối đa 8 Link vật lý thành 1 Link logic
 
@@ -45,6 +47,8 @@ PAgP cũng có 3 chế độ tương tự LACP:
 - `On`
 - `Active` - (`Auto`)
 - `Passive` - (`Desirable`)
+
+<img src="..\images\Screenshot_31.png">
 
 ### Điều kiện tạo Etherchannel của 2 port giữa 2 SW
 <img src="..\images\Screenshot_29.png">
