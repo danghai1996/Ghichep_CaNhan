@@ -33,10 +33,6 @@ Có 2 loại giao thức EtherChannel:
 ### LACP (Link Aggregation Control Protocol) 
 Là giao thức cấu hình EtherChannel chuẩn quốc tế IEEE 802.3ad và có thể dùng được cho hầu hết các thiết bị thuộc các hãng khác nhau, LACP hỗ trợ ghép tối đa 16 Link vật lý thành một Link logic (8 Port Active – 8 Port Passive).
 
-LACP gửi các gói trên các cổng EtherChannel của switch. LACP gán vai trò cổng đến các đầu cuối của EtherChannel. Các switch có độ ưu tiên thấp nhất sẽ được phép ra quyết định về các cổng nào sẽ được tham gia vào EtherChannel ở một thời điểm. Các cổng được chọn lựa và trở thành active theo giá trị độ ưu tiên priority của nó, trong đó giá trị ưu tiên cao
-
-Thông qua LACP, một switch sẽ chọn lựa ra 8 cổng có độ ưu tiên thấp nhất như là các member active của EtherChannel. Các cổng còn lại sẽ nằm trong trạng thái standby và sẽ được enable nếu một trong những kết nối active bị down. Cũng giống như PagP, LACP có thể được cấu hình trong active mode, trong đó một switch sẽ chủ động hỏi switch đằng xa bắt tay hình thành EtherChannel. Chế độ passtive thì switch chỉ chủ động hình thành EtherChannel chỉ nếu switch đầu xa khởi tạo nó.
-
 LACP có 3 chế độ:
 - `On`: Chế độ cấu hình EtherChannel tĩnh, chế độ này thường không được dùng vì các Switch cấu hình EtherChannel có thể hoạt động được và cũng có thể không hoạt động được vì các Switch được cầu hình bằng tay phục thuộc vào con người nên hoàn toàn không có bước thương lượng trao đổi chính sách giữa các bên dẫn đến khả năng Loop cao và bị STP (Spanning Tree Protocol) Block.
 - `Active`: Chế độ tự động – Tự động thương lượng với đối tác
@@ -45,4 +41,189 @@ LACP có 3 chế độ:
 ### PAgP (Port Aggregation Protocol)
 Port Aggregation Protocol là một giao thức độc quyền của Cisco được sử dụng để hình thành EtherChannel. Chỉ hỗ trợ ghép tối đa 8 Link vật lý thành 1 Link logic
 
-Các gói tin PagP được trao đổi giữa các switch trên các cổng EtherChannel. Các thông số của swtich láng giềng được xác định (như khả năng của cổng) và sẽ được so sánh với switch cục bộ. Các cổng có cùng neighbor ID và khả năng hình thành nhóm sẽ được nhóm lại với nhau thành các kết nối FEC. PagP hình thành nên EtherChannel chỉ trên những cổng được cấu hình cùng static VLAN hoặc là cùng loại trunking. PagP cũng thay đổi các thông số động của EtherChannel nếu một trong những cổng của bundle bị thay đổi.
+PAgP cũng có 3 chế độ tương tự LACP:
+- `On`
+- `Active` - (`Auto`)
+- `Passive` - (`Desirable`)
+
+### Điều kiện tạo Etherchannel của 2 port giữa 2 SW
+<img src="..\images\Screenshot_29.png">
+
+# Lab cấu hình Etherchanel
+## Cấu hình PAgP
+<img src="..\images\Screenshot_30.png">
+
+Quy hoạch IP:
+- SW1 - VLAN10: 192.168.10.11/24
+- SW2 - VLAN10: 192.168.10.12/24
+
+
+### Cấu hình cơ bản
+Trên SW1:
+```
+Switch#configure terminal 
+Switch(config)#vlan 10
+Switch(config-vlan)#name VLAN10
+Switch(config-vlan)#exit
+
+Switch(config)#interface vlan 10
+Switch(config-if)#ip address 192.168.10.11 255.255.255.0
+Switch(config-if)#no shutdown
+Switch(config-if)#exit
+
+Switch(config)#exit
+Switch#
+```
+
+Trên SW2:
+```
+Switch#configure terminal 
+Switch(config)#vlan 10
+Switch(config-vlan)#name VLAN10
+Switch(config-vlan)#exit
+
+Switch(config)#interface vlan 10
+Switch(config-if)#ip address 192.168.10.12 255.255.255.0
+Switch(config-if)#no shutdown
+Switch(config-if)#exit
+
+Switch(config)#exit
+Switch#
+```
+
+### Cấu hình PAgP
+Vì ta sử dụng port 0/1 đến 0/4 nên ta có thể cấu hình nhanh bằng cách gộp vào range để cấu hình:
+
+TRên SW1:
+```
+Switch#configure terminal 
+Switch(config)#interface range fastEthernet 0/1-4
+Switch(config-if-range)#switchport trunk native vlan 10
+Switch(config-if-range)#switchport mode trunk 
+Switch(config-if-range)#channel-protocol pagp
+Switch(config-if-range)#channel-group 1 mode desirable
+Switch(config-if-range)#exit
+```
+
+Trên SW2:
+```
+Switch#configure terminal 
+Switch(config)#interface range fastEthernet 0/1-4
+Switch(config-if-range)#switchport trunk native vlan 10
+Switch(config-if-range)#switchport mode trunk 
+Switch(config-if-range)#channel-protocol pagp
+Switch(config-if-range)#channel-group 1 mode desirable
+Switch(config-if-range)#exit
+```
+
+Kiểm tra trên cả 2 SW:
+```
+Switch#show etherchannel summary
+```
+Kết quả:
+```
+Flags:  D - down        P - in port-channel
+        I - stand-alone s - suspended
+        H - Hot-standby (LACP only)
+        R - Layer3      S - Layer2
+        U - in use      f - failed to allocate aggregator
+        u - unsuitable for bundling
+        w - waiting to be aggregated
+        d - default port
+
+
+Number of channel-groups in use: 1
+Number of aggregators:           1
+
+Group  Port-channel  Protocol    Ports
+------+-------------+-----------+----------------------------------------------
+
+1      Po1(SU)           PAgP   Fa0/1(P) Fa0/2(P) Fa0/3(P) Fa0/4(P)
+```
+
+Ping từ SW1 sang SW2 và ngược lại:
+```
+SW1#ping 192.168.10.12
+
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.10.12, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 0/0/1 ms
+
+
+SW2#ping 192.168.10.11
+
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.10.11, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 0/0/1 ms
+```
+
+## Cấu hình LACP
+<img src="..\images\Screenshot_30.png">
+
+Quy hoạch IP:
+- SW1 - VLAN10: 192.168.10.11/24
+- SW2 - VLAN10: 192.168.10.12/24
+
+
+### Cấu hình cơ bản
+Trên SW1:
+```
+Switch#configure terminal 
+Switch(config)#vlan 10
+Switch(config-vlan)#name VLAN10
+Switch(config-vlan)#exit
+
+Switch(config)#interface vlan 10
+Switch(config-if)#ip address 192.168.10.11 255.255.255.0
+Switch(config-if)#no shutdown
+Switch(config-if)#exit
+
+Switch(config)#exit
+Switch#
+```
+
+Trên SW2:
+```
+Switch#configure terminal 
+Switch(config)#vlan 10
+Switch(config-vlan)#name VLAN10
+Switch(config-vlan)#exit
+
+Switch(config)#interface vlan 10
+Switch(config-if)#ip address 192.168.10.12 255.255.255.0
+Switch(config-if)#no shutdown
+Switch(config-if)#exit
+
+Switch(config)#exit
+Switch#
+```
+
+### Cấu hình LACP
+TRên SW1:
+```
+Switch#configure terminal 
+Switch(config)#interface range fastEthernet 0/1-4
+Switch(config-if-range)#switchport trunk native vlan 10
+Switch(config-if-range)#switchport mode trunk 
+Switch(config-if-range)#channel-protocol lacp
+Switch(config-if-range)#channel-group 1 mode passive
+Switch(config-if-range)#exit
+```
+
+Trên SW2:
+```
+Switch#configure terminal 
+Switch(config)#interface range fastEthernet 0/1-4
+Switch(config-if-range)#switchport trunk native vlan 10
+Switch(config-if-range)#switchport mode trunk 
+Switch(config-if-range)#channel-protocol lacp
+Switch(config-if-range)#channel-group 1 mode active
+Switch(config-if-range)#exit
+```
+
+## Lưu ý
+- Trên tất cả các switch của Catalyst (2970, 3560, 4500 và 6500), ta có thể cấu hình để chọn giao thức PagP và LACP. 
+- Các model cũ hơn như 2950 có thể chỉ hỗ trợ PagP. 
+- Từng interface nằm trong EtherChannel phải được cấu hình và gán cùng một nhóm duy nhất (từ 1 đến 64).
