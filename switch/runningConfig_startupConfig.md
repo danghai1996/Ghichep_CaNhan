@@ -122,6 +122,10 @@ Lệnh show file startup config:
 Switch#show startup-config 
 ```
 
-## `copy running-configuration startup-configuration`
-Lệnh `copy running-configuration startup-configuration` được sử dụng để lưu cấu hình hiện tại (running config) vào NVRAM để khi SW khởi động lại thì cấu hình không thay đổi. Khi đó, startup config sẽ có nội dung giống với running config.
+## Lệnh `copy running-config startup-config`
+Lệnh 
+```
+copy running-config startup-config
+```
+được sử dụng để lưu cấu hình hiện tại (running config) vào NVRAM để khi SW khởi động lại thì cấu hình không thay đổi. Khi đó, startup config sẽ có nội dung giống với running config.
 
