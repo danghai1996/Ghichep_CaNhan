@@ -202,6 +202,25 @@ SW1(config)#exit
 SW1#
 ```
 
+Đặt địa chỉ IP cho interface VLAN10 của SW2 là `192.168.10.2` và VLAN20 là `192.168.20.2`
+```
+SW2#configure terminal 
+SW2(config)#interface vlan 10
+SW2(config-if)#
+SW2(config-if)#ip address 192.168.10.2 255.255.255.0
+SW2(config-if)#no shutdown
+SW2(config-if)#exit
+SW2(config)#
+
+SW2(config)#interface vlan 20
+SW2(config-if)#ip address 192.168.20.2 255.255.255.0
+SW2(config-if)#no shutdown 
+SW2(config-if)#exit 
+
+SW2(config)#exit
+SW2#
+```
+
 ### Thiết lập VTP Server và VTP Client
 Mặc định thì Catalyst switch sẽ được cấu hình làm VTP Server. Giờ ta sẽ thiết lập:
 
@@ -251,6 +270,19 @@ SW2(config-if)#switchport mode trunk
 SW2(config-if)#end
 SW2#
 ```
+
+**Lưu ý:** Nếu gặp lỗi khi cấu hình mode trunk cho port
+```
+SW1(config-if)#switchport mode trunk
+Command rejected: An interface whose trunk encapsulation is "Auto" can not be configured to "trunk" mode.
+```
+Điều này có nghĩa là do bạn đang thiếu kiểu đóng gói (có thể là 802.1Q) trên port đó.
+
+Để xử lý, ta sử dụng lệnh dưới:
+```
+switchport trunk encapsulation dot1q
+```
+Sau đó thực hiện lại cấu hình mode trunk như bình thường.
 
 ## 4. Các lệnh kiểm tra sau khi cấu hình xong
 ```
