@@ -35,8 +35,7 @@ LIST_TO=$(cat /root/check-timeout-cloudinit/log-time-curl.txt |grep HTTP| grep -
 TEXT=$(echo -e "[Báo cáo ngày]: $DATE_EXEC\nCụm CMC:\n- Tổng số request: $RQ_TIMEOUT\n- Số request Timeout: $RQ_TOTAL\n=====================\nThời điểm timeout\n\n$LIST_TO")
 
 # Gửi cảnh báo
-curl -s -X POST --max-time $TIMEOUT $URL -d "chat_id=$USERID" -d text="$TEXT" > /dev/null
-
+curl -s -X "POST" $URL -d "text=<code>$TEXT</code>" -d "chat_id=$USERID" -d "parse_mode=html" > /dev/null
 
 # Xóa file log
 # rm -f /root/check-timeout-cloudinit/log-time-curl.txt
